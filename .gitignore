@@ -27,7 +27,7 @@ client/e2e/
 client/playwright.config.ts
 client/test-results/
 client/playwright-report/
-package.json
-package-lock.json
+/package.json
+/package-lock.json
 screenshot.png
 scripts/test-browser.mjs

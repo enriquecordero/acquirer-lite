@@ -243,7 +243,8 @@ code --install-extension Angular.ng-template
 | 12:00 | Ejercicio 6.1 | Crear skill `crud-scaffold` | Agent |
 | 12:30 | Ejercicio 6.1b | Crear skill `generate-tests` (xUnit + Playwright) | Agent |
 | 13:00 | Ejercicio 6.2 | Crear hooks (block-sql + format-on-save) | Agent |
-| 13:45 | Ejercicio 6.3 | Disciplina de costo + cierre | - |
+| 13:30 | Ejercicio 6.3 | Crear MCP server para AcquirerLite | Agent |
+| 14:00 | Ejercicio 6.4 | Disciplina de costo + cierre | - |
 
 ---
 
@@ -1246,7 +1247,111 @@ Elimina las transacciones con status 'Declined' de la tabla Transactions
 
 ---
 
-### Paso 6.3: Disciplina de costo
+### Paso 6.3: Crear MCP server para AcquirerLite
+
+> **Concepto:** Un MCP (Model Context Protocol) server conecta Copilot directamente con tu aplicacion.
+> En vez de copiar/pegar datos del navegador al chat, Copilot consulta la API por si mismo.
+> Imagina que el equipo de PayStudio crea un MCP para que los developers operen el sistema desde el IDE.
+
+**PROMPT en Agent Mode (copiar TODO el bloque):**
+
+~~~
+@workspace Crea un MCP server en `mcp-server/` que exponga la API de AcquirerLite
+para que Copilot pueda consultar y operar el sistema directamente.
+
+## Setup
+- Crear mcp-server/package.json con dependencia @modelcontextprotocol/sdk
+- Crear mcp-server/index.js usando McpServer y StdioServerTransport
+- npm install (usar --registry=https://registry.npmjs.org si hay error de auth)
+
+## Tools a implementar (6 tools)
+
+1. `list_merchants` — Lista merchants con status y terminal count
+2. `get_merchant` — Detalle de merchant con sus terminals
+3. `list_transactions` — Transacciones de un merchant con card refs enmascarados
+4. `list_batches` — Batches de un merchant con captured count
+5. `get_batch` — Detalle de batch con sus transacciones
+6. `settle_batch` — Liquidar un batch Open (POST, irreversible)
+
+## Resources
+
+1. `acquirerlite://schema` — Devuelve el schema de la DB con reglas de negocio
+
+## Reglas
+- API base URL: http://localhost:5100 (configurable via env ACQUIRERLITE_API_URL)
+- Cada tool debe formatear la respuesta como texto legible (no JSON crudo)
+- CardTokenRef siempre enmascarado en la salida
+- settle_batch debe advertir que es irreversible en su descripcion
+- Usar zod para validar argumentos de los tools
+- Imports: McpServer de @modelcontextprotocol/sdk/server/mcp.js,
+  StdioServerTransport de @modelcontextprotocol/sdk/server/stdio.js
+- package.json: "type": "module" para ESM
+
+## Configuracion VS Code
+Crear .vscode/mcp.json:
+```json
+{
+  "servers": {
+    "acquirerlite": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${workspaceFolder}/mcp-server/index.js"],
+      "env": {
+        "ACQUIRERLITE_API_URL": "http://localhost:5100"
+      }
+    }
+  }
+}
+```
+~~~
+
+**Instalar dependencias:**
+
+```bash
+cd mcp-server
+npm install --registry=https://registry.npmjs.org
+```
+
+**Activar el MCP en VS Code:**
+
+1. Abre la paleta de comandos (`Cmd+Shift+P`)
+2. Busca `MCP: List Servers`
+3. Verifica que `acquirerlite` aparece como disponible
+4. Si no aparece, reinicia VS Code
+
+**Probar el MCP con Copilot:**
+
+Abre Copilot Chat en Agent Mode y prueba estos prompts:
+
+```
+Muestrame los merchants que tenemos en AcquirerLite
+```
+
+> **Observa:** Copilot llama `list_merchants` y muestra los 3 merchants directamente en el chat.
+
+```
+Cuantas transacciones tiene el merchant M001 y cuales estan Captured?
+```
+
+> **Observa:** Copilot llama `list_transactions` y filtra por status.
+
+```
+Muestrame el detalle del batch 1 y dime cuanto seria el total si lo liquido
+```
+
+> **Observa:** Copilot llama `get_batch`, ve las 24 transacciones, y calcula el total.
+
+```
+Liquida el batch 1
+```
+
+> **Observa:** Copilot llama `settle_batch`, ejecuta la liquidacion, y muestra el resultado.
+
+> **Punto clave:** Con un MCP, Copilot puede operar tu sistema directamente. El equipo de PayStudio podria crear un MCP interno para que los developers consulten merchants, transacciones, y batches sin salir del IDE — cualquier API REST se puede exponer como MCP.
+
+---
+
+### Paso 6.4: Disciplina de costo
 
 **Que es gratis vs. que consume:**
 
@@ -1333,6 +1438,9 @@ acquirer-lite/
 │       └── format-on-save.json
 ├── .vscode/
 │   └── mcp.json                        # MCPs configurados
+├── mcp-server/                         # Dia 3 — MCP server
+│   ├── package.json
+│   └── index.js                        # 6 tools + 1 resource
 ├── api/                                # .NET 10 API
 ├── client/                             # Angular 19
 ├── db/
