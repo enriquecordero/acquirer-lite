@@ -23,6 +23,7 @@ dotnet new xunit -n AcquirerLite.Tests -o api.tests
 dotnet add api.tests/AcquirerLite.Tests.csproj reference api/AcquirerLite.Api.csproj
 dotnet add api.tests package Moq
 dotnet add api.tests package FluentAssertions
+dotnet add api.tests package Microsoft.EntityFrameworkCore.InMemory
 
 # Crear solution si no existe
 dotnet new sln -n AcquirerLite
@@ -48,6 +49,7 @@ api.tests/
 #### Reglas para tests .NET
 
 - Usar **InMemoryDatabase** de EF Core para el DbContext, NO SQL Server real
+- Configurar `ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))` porque InMemory no soporta transactions
 - Naming: `MetodoQueTesteo_Escenario_ResultadoEsperado`
 - Cada controller test recibe el DbContext mockeado via fixture
 - Agrupar con `[Trait("Category", "Unit")]`
@@ -184,7 +186,10 @@ client/
 
 - Base URL: `http://localhost:4200` (Angular dev server con proxy)
 - Prerequisito: API corriendo en `:5100` y Angular en `:4200`
-- Usar `page.getByRole()` y `page.getByText()` — evitar selectores CSS frágiles
+- Usar `page.getByRole()` y `page.getByText()` — evitar selectores CSS frágiles (Angular ViewEncapsulation hace que class selectors no funcionen desde fuera)
+- Cuidado con `getByText()` ambiguo — si un texto aparece en nav, heading, y content, usar `getByRole('heading', { name: '...' })` para ser específico
+- Esperar a que el contenido dinámico cargue antes de contar elementos: `await expect(locator.first()).toBeVisible()` antes de `count()`
+- Settle tests deben correr en serie (`test.describe.configure({ mode: 'serial' })`) porque modifican estado de DB
 - Testear flujos completos:
   - Navegar a merchants → ver lista → click en merchant → ver terminals
   - Navegar a transactions → filtrar por merchant → verificar cards enmascaradas
