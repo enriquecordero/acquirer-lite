@@ -1,5 +1,5 @@
 ---
-name: 'generate-qsr'
+name: 'generate-dba-scripts-qsr'
 description: 'Genera el paquete de pase a PRD (QSR) con scripts de install, rollback, instrucciones y test script'
 agent: 'agent'
 argument-hint: 'numero de QSR y descripcion breve (ej: 1234567 Agregar campo Email a Merchants)'
