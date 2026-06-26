@@ -818,7 +818,34 @@ de settle y el componente Angular. Busca:
 4. Race conditions en la liquidacion
 ```
 
-**Entregable del Dia 2:** instructions por costura + feature "liquidar batch" funcionando end-to-end.
+### Paso 4.6: Generar paquete QSR (pase a PRD)
+
+Ahora que el feature esta listo, generamos el paquete de deployment con el prompt `/generate-qsr`.
+
+**Escribe en Copilot Chat:**
+
+```
+/generate-qsr 3001234 Agregar endpoint de liquidacion de batch con logica transaccional
+```
+
+**Que genera:** Una carpeta `deploy/QSR 3001234/` con:
+
+```
+deploy/QSR 3001234/
+├── install/
+│   ├── 01_DML_Validate.sql       ← SELECTs del estado actual
+│   ├── 02_DML_Param.sql          ← Los cambios (si hay DDL/DML)
+│   └── 03_DML_Validate.sql       ← SELECTs verificando que aplicó
+├── rollback/
+│   ├── 01_DML_Param.sql          ← Revertir los cambios
+│   └── 02_DML_Validate.sql       ← Verificar que se revirtió
+├── ACQLITE - QSR 3001234 - Database Instructions.txt
+└── ACQLITE - QSR 3001234 - Testscript.md
+```
+
+> **Nota:** El prompt analiza los cambios de DB del feature (git diff, seed.sql, DbContext) y genera scripts T-SQL con validates antes/despues y rollback completo. El test script sale en markdown (no .docx) para que sea versionable.
+
+**Entregable del Dia 2:** instructions por costura + feature "liquidar batch" funcionando + paquete QSR generado.
 
 ---
 
@@ -1183,6 +1210,12 @@ Cada participante verifica su repo:
 | NuGet | "verifica vulnerabilidades en los paquetes NuGet" |
 | MSSQL Extension | Conectar via connection profile — agent mode lo usa automaticamente |
 
+### Prompt Files
+
+| Prompt | Como usarlo | Que genera |
+|--------|-------------|------------|
+| `/generate-qsr` | `/generate-qsr 3001234 Descripcion del cambio` | Paquete QSR completo (install + rollback + instructions + testscript) |
+
 ### Estructura del Repo
 
 ```
@@ -1193,6 +1226,8 @@ acquirer-lite/
 │   │   ├── api.instructions.md
 │   │   ├── client.instructions.md
 │   │   └── db.instructions.md
+│   ├── prompts/                        # Dia 2
+│   │   └── generate-qsr.prompt.md
 │   ├── agents/                         # Dia 3
 │   │   ├── feature-builder.agent.md
 │   │   └── payments-reviewer.agent.md
