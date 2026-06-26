@@ -21,7 +21,7 @@ else
     --name "$CONTAINER_NAME" \
     -d \
     -p 1433:1433 \
-    -m 2048M \
+    -m 3072M \
     --arch amd64 \
     --rosetta \
     -e ACCEPT_EULA=Y \
