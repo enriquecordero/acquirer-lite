@@ -47,47 +47,14 @@ public class BatchesController(AcquirerDbContext db) : ControllerBase
             batch.Transactions.Sum(t => t.Amount));
     }
 
-    [HttpPost("{id:int}/settle")]
-    public async Task<ActionResult<BatchDetailDto>> Settle(int id)
-    {
-        await using var tx = await db.Database.BeginTransactionAsync();
-
-        var batch = await db.SettlementBatches
-            .Include(b => b.Transactions.Where(t => t.Status == TransactionStatus.Captured))
-                .ThenInclude(t => t.Terminal)
-            .Include(b => b.Merchant)
-            .FirstOrDefaultAsync(b => b.Id == id);
-
-        if (batch is null) return NotFound();
-        if (batch.Status == BatchStatus.Settled)
-            return BadRequest("Batch already settled.");
-        if (batch.Transactions.Count == 0)
-            return BadRequest("No captured transactions to settle.");
-
-        var total = batch.Transactions.Sum(t => t.Amount);
-
-        foreach (var t in batch.Transactions)
-            t.Status = TransactionStatus.Settled;
-
-        batch.Status = BatchStatus.Settled;
-        batch.TotalAmount = total;
-        batch.SettledAt = DateTime.UtcNow;
-
-        await db.SaveChangesAsync();
-        await tx.CommitAsync();
-
-        return new BatchDetailDto(
-            batch.Id,
-            batch.MerchantId,
-            batch.Merchant.LegalName,
-            batch.Merchant.MerchantCode,
-            batch.BatchDate,
-            batch.Status,
-            batch.Transactions.Select(t => new BatchTransactionDto(
-                t.Id, t.Terminal.TerminalCode, t.AuthCode,
-                MaskToken(t.CardTokenRef), t.Amount)).ToList(),
-            total);
-    }
+    // TODO (Día 2): Implementar POST /api/batches/{id}/settle
+    // La operación debe:
+    // 1. Abrir una transacción de DB
+    // 2. Obtener el batch con sus transacciones Captured
+    // 3. Validar que el batch esté Open y tenga transacciones
+    // 4. Sumar los montos, marcar transacciones como Settled
+    // 5. Marcar el batch como Settled con TotalAmount y SettledAt
+    // 6. Commit de la transacción
 
     private static string MaskToken(string token)
     {

@@ -20,3 +20,7 @@ Thumbs.db
 
 ## Docker volumes
 mssql-data/
+package.json
+package-lock.json
+screenshot.png
+scripts/test-browser.mjs

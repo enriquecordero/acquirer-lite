@@ -1,9 +1,4 @@
 {
-  "hooks": [
-    {
-      "event": "PostToolUse",
-      "tool": "file_edit",
-      "command": "bash -c 'input=$(cat); file=$(echo \"$input\" | jq -r .path // empty); if [ -n \"$file\" ]; then case \"$file\" in *.cs) dotnet format --include \"$file\" 2>/dev/null;; *.ts) npx prettier --write \"$file\" 2>/dev/null;; esac; fi'"
-    }
-  ]
+  "_comment": "TODO (Día 3): Implementar hook PostToolUse que formatee archivos .cs con dotnet format y .ts con prettier",
+  "hooks": []
 }

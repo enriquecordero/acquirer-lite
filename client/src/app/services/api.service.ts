@@ -94,7 +94,5 @@ export class ApiService {
     return this.http.get<BatchDetail>(`/api/batches/${id}`);
   }
 
-  settleBatch(id: number) {
-    return this.http.post<BatchDetail>(`/api/batches/${id}/settle`, {});
-  }
+  // TODO (Día 2): Implementar settleBatch(id) — POST /api/batches/{id}/settle
 }
