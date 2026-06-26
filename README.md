@@ -820,12 +820,12 @@ de settle y el componente Angular. Busca:
 
 ### Paso 4.6: Generar paquete QSR (pase a PRD)
 
-Ahora que el feature esta listo, generamos el paquete de deployment con el prompt `/generate-qsr`.
+Ahora que el feature esta listo, generamos el paquete de deployment con el prompt `/generate-dba-scripts-qsr`.
 
 **Escribe en Copilot Chat:**
 
 ```
-/generate-qsr 3001234 Agregar endpoint de liquidacion de batch con logica transaccional
+/generate-dba-scripts-qsr 3001234 Agregar endpoint de liquidacion de batch con logica transaccional
 ```
 
 **Que genera:** Una carpeta `deploy/QSR 3001234/` con:
@@ -1214,7 +1214,7 @@ Cada participante verifica su repo:
 
 | Prompt | Como usarlo | Que genera |
 |--------|-------------|------------|
-| `/generate-qsr` | `/generate-qsr 3001234 Descripcion del cambio` | Paquete QSR completo (install + rollback + instructions + testscript) |
+| `/generate-dba-scripts-qsr` | `/generate-dba-scripts-qsr 3001234 Descripcion del cambio` | Paquete QSR completo (install + rollback + instructions + testscript) |
 
 ### Estructura del Repo
 
@@ -1227,7 +1227,7 @@ acquirer-lite/
 │   │   ├── client.instructions.md
 │   │   └── db.instructions.md
 │   ├── prompts/                        # Dia 2
-│   │   └── generate-qsr.prompt.md
+│   │   └── generate-dba-scripts-qsr.prompt.md
 │   ├── agents/                         # Dia 3
 │   │   ├── feature-builder.agent.md
 │   │   └── payments-reviewer.agent.md
