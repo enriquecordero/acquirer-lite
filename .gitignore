@@ -1,0 +1,21 @@
+## .NET
+api/bin/
+api/obj/
+*.user
+
+## Node / Angular
+client/node_modules/
+client/dist/
+client/.angular/
+
+## IDE
+.idea/
+*.swp
+*.swo
+
+## OS
+.DS_Store
+Thumbs.db
+
+## Docker volumes
+mssql-data/

@@ -1,0 +1,23 @@
+{
+  "name": "AcquirerLite Fullstack",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:2": { "version": "10.0" },
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "ms-mssql.mssql",
+        "Angular.ng-template",
+        "ms-dotnettools.csdevkit"
+      ]
+    }
+  },
+  "forwardPorts": [5000, 4200, 1433],
+  "postCreateCommand": "dotnet restore ./api/AcquirerLite.Api.csproj && npm --prefix ./client install"
+}

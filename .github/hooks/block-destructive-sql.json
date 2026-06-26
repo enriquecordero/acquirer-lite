@@ -1,0 +1,14 @@
+{
+  "hooks": [
+    {
+      "event": "PreToolUse",
+      "tool": "mssql_query",
+      "command": "bash -c 'input=$(cat); if echo \"$input\" | grep -iE \"(DROP\\s+TABLE|DELETE\\s+FROM\\s+\\w+\\s*$|TRUNCATE\\s+TABLE|DROP\\s+DATABASE)\" > /dev/null 2>&1; then echo \"BLOCKED: Destructive SQL detected. Use migrations for schema changes.\" >&2; exit 1; fi'"
+    },
+    {
+      "event": "PreToolUse",
+      "tool": "terminal",
+      "command": "bash -c 'input=$(cat); if echo \"$input\" | grep -iE \"rm\\s+-rf\\s+/\" > /dev/null 2>&1; then echo \"BLOCKED: Destructive rm -rf detected.\" >&2; exit 1; fi'"
+    }
+  ]
+}
