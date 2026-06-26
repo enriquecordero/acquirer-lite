@@ -241,6 +241,7 @@ code --install-extension Angular.ng-template
 | 10:00 | Ejercicio 5.2 | Crear agent `payments-reviewer` + handoff | Agent |
 | 11:00 | *Almuerzo* | | |
 | 12:00 | Ejercicio 6.1 | Crear skill `crud-scaffold` | Agent |
+| 12:30 | Ejercicio 6.1b | Crear skill `generate-tests` (xUnit + Playwright) | Agent |
 | 13:00 | Ejercicio 6.2 | Crear hooks (block-sql + format-on-save) | Agent |
 | 13:45 | Ejercicio 6.3 | Disciplina de costo + cierre | - |
 
@@ -1078,6 +1079,99 @@ Un refund tiene: transactionId, amount, reason, status (Pending/Approved/Rejecte
 
 ---
 
+### Paso 6.1b: Crear skill generate-tests
+
+**PROMPT en Agent Mode (copiar TODO el bloque):**
+
+~~~
+@workspace Crea el archivo .github/skills/generate-tests/SKILL.md con:
+
+# Generate Tests Skill
+
+Genera pruebas unitarias y E2E para AcquirerLite.
+Detecta la capa (API o Client) y aplica el framework correcto.
+
+## Backend — xUnit + Moq + FluentAssertions
+
+Setup:
+- dotnet new xunit -n AcquirerLite.Tests -o api.tests
+- dotnet add api.tests reference api/AcquirerLite.Api.csproj
+- dotnet add api.tests package Moq
+- dotnet add api.tests package FluentAssertions
+
+Reglas:
+- InMemoryDatabase de EF Core (NO SQL Server real)
+- Naming: MetodoQueTesteo_Escenario_ResultadoEsperado
+- Trait("Category", "Unit") en cada test
+- El settle batch es la operacion critica:
+  - Batch Open + Captured → settle exitoso, TotalAmount = suma
+  - Batch ya Settled → 400
+  - Batch sin transacciones → 400
+  - Batch inexistente → 404
+- Verificar que CardTokenRef se enmascara como tok_••XX
+- Verificar enums como string (no int)
+
+Ejecutar: dotnet test api.tests --verbosity normal
+
+## Frontend — Jest (unitarias) + Playwright (E2E)
+
+Setup Jest:
+- npm install --save-dev jest @jest/globals ts-jest @types/jest
+- npx ts-jest config:init
+- script: "test:unit": "jest"
+
+Setup Playwright:
+- npm init playwright@latest (TypeScript, folder: e2e)
+- script: "test:e2e": "npx playwright test"
+- script: "test:e2e:ui": "npx playwright test --ui"
+
+Reglas Jest:
+- Mockear HttpClient con jest.fn()
+- Testear services y component logic (no templates)
+- Signals: verificar que computed() y effect() reaccionan
+
+Reglas Playwright:
+- Base URL: http://localhost:4200
+- Prerequisito: API en :5100 y Angular en :4200
+- Usar page.getByRole() y page.getByText() (no CSS selectors)
+- Screenshot on failure: use: { screenshot: 'only-on-failure' }
+- Flujos criticos:
+  - Merchants: listar → click → ver terminals
+  - Transactions: filtrar → verificar cards enmascaradas (tok_••XX)
+  - Settle batch: ver Open → click settle → verificar Settled + TotalAmount
+
+Ejecutar:
+- npx playwright test (headless)
+- npx playwright test --ui (con UI interactiva)
+- npx playwright show-report (reporte HTML)
+
+## Seguridad en tests
+- NUNCA usar PAN reales — siempre tok_sandbox_* o tok_test_*
+- NUNCA hardcodear passwords de produccion
+~~~
+
+**Probar la skill — tests del backend:**
+
+```
+Genera tests unitarios para BatchesController usando la skill generate-tests.
+Enfocate en el endpoint settle.
+```
+
+> **Observa:** Copilot crea el proyecto xUnit, instala paquetes, y genera tests cubriendo los casos criticos del settle.
+
+**Probar la skill — tests E2E con Playwright:**
+
+```
+Genera tests E2E con Playwright para el flujo de settle batch
+usando la skill generate-tests.
+```
+
+> **Observa:** Instala Playwright, genera el config, y crea tests que navegan la app y verifican el flujo completo.
+
+**Deshaz los cambios** antes de continuar.
+
+---
+
 ### Paso 6.2: Crear hooks deterministas
 
 Los hooks son la capa que **garantiza** — las instrucciones guian, los hooks bloquean.
@@ -1232,7 +1326,8 @@ acquirer-lite/
 │   │   ├── feature-builder.agent.md
 │   │   └── payments-reviewer.agent.md
 │   ├── skills/                         # Dia 3
-│   │   └── crud-scaffold/SKILL.md
+│   │   ├── crud-scaffold/SKILL.md
+│   │   └── generate-tests/SKILL.md
 │   └── hooks/                          # Dia 3
 │       ├── block-destructive-sql.json
 │       └── format-on-save.json
