@@ -4,17 +4,17 @@
 
 - [Introduccion](#introduccion)
 - [Conceptos Clave de GitHub Copilot](#conceptos-clave-de-github-copilot)
-- [Pre-requisitos](#%EF%B8%8F-pre-requisitos)
-- [Agenda del Workshop](#-agenda-del-workshop)
-- [Dia 1 Ejercicio 1: Levantar el Entorno Contenedorizado](#-dia-1-ejercicio-1-levantar-el-entorno-contenedorizado)
-- [Dia 1 Ejercicio 2: El Piso Gratis y copilot-instructions](#-dia-1-ejercicio-2-el-piso-gratis-y-copilot-instructions)
-- [Dia 2 Ejercicio 3: Instructions por Costura y MCPs](#-dia-2-ejercicio-3-instructions-por-costura-y-mcps)
-- [Dia 2 Ejercicio 4: Construir "Liquidar Batch" Full-stack](#-dia-2-ejercicio-4-construir-liquidar-batch-full-stack)
-- [Dia 3 Ejercicio 5: Custom Agents y Handoffs](#-dia-3-ejercicio-5-custom-agents-y-handoffs)
-- [Dia 3 Ejercicio 6: Skills, Hooks y Disciplina de Costo](#-dia-3-ejercicio-6-skills-hooks-y-disciplina-de-costo)
-- [Referencia Rapida](#-referencia-rapida)
-- [Troubleshooting](#-troubleshooting)
-- [Recursos Adicionales](#-recursos-adicionales)
+- [Pre-requisitos](#pre-requisitos)
+- [Agenda del Workshop](#agenda-del-workshop)
+- [Dia 1 Ejercicio 1: Levantar el Entorno Contenedorizado](#dia-1-ejercicio-1-levantar-el-entorno-contenedorizado)
+- [Dia 1 Ejercicio 2: El Piso Gratis y copilot-instructions](#dia-1-ejercicio-2-el-piso-gratis-y-copilot-instructions)
+- [Dia 2 Ejercicio 3: Instructions por Costura y MCPs](#dia-2-ejercicio-3-instructions-por-costura-y-mcps)
+- [Dia 2 Ejercicio 4: Construir "Liquidar Batch" Full-stack](#dia-2-ejercicio-4-construir-liquidar-batch-full-stack)
+- [Dia 3 Ejercicio 5: Custom Agents y Handoffs](#dia-3-ejercicio-5-custom-agents-y-handoffs)
+- [Dia 3 Ejercicio 6: Skills, Hooks y Disciplina de Costo](#dia-3-ejercicio-6-skills-hooks-y-disciplina-de-costo)
+- [Referencia Rapida](#referencia-rapida)
+- [Troubleshooting](#troubleshooting)
+- [Recursos Adicionales](#recursos-adicionales)
 
 ---
 
